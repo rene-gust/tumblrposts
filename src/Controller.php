@@ -43,6 +43,6 @@ class Controller
             $videos = $cache->get('videos');
         }
 
-        return new JsonResponse(['images' => $images, 'videos' => $videos]);
+        return new JsonResponse(['images' => $images, 'videos' => $videos], 200, ['Access-Control-Allow-Origin' => '*']);
     }
 }
