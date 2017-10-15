@@ -3,8 +3,10 @@
 namespace TumblrPosts;
 
 use Silex\Application;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Tumblr\API\Client;
+use TumblrPosts\Cache\Cache;
 
 class Controller
 {
@@ -20,11 +22,27 @@ class Controller
      * @param Application $app
      * @return Response
      */
-    public function posts(Application $app) {
-        $client = new Client($app['config']['tumblr_api_consumer_key'], $app['config']['tumblr_api_consumer_secret']);
-        $images = Posts::get($app, $client, Posts::TYPE_PHOTO);
-        $videos = Posts::get($app, $client, Posts::TYPE_VIDEO);
+    public function posts(Application $app)
+    {
 
-        return new Response('cool');
+        $cache = $app['cache'];
+        $cache = new Cache($cache);
+        $client = new Client($app['config']['tumblr_api_consumer_key'], $app['config']['tumblr_api_consumer_secret']);
+
+        if (!$cache->hasValidCachedObject('images')) {
+            $images = Posts::get($app, $client, Posts::TYPE_PHOTO);
+            $cache->set('images', json_encode($images));
+        } else {
+            $images = $cache->get('images');
+        }
+
+        if (!$cache->hasValidCachedObject('videos')) {
+            $videos = Posts::get($app, $client, Posts::TYPE_VIDEO);
+            $cache->set('videos', json_encode($videos));
+        } else {
+            $videos = $cache->get('videos');
+        }
+
+        return new JsonResponse(['images' => $images, 'videos' => $videos]);
     }
 }

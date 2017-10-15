@@ -7,8 +7,14 @@ require '../config.php';
 $app = new Silex\Application();
 
 $app['config'] = $config;
-
-$app['debug'] = true;
+$app->register(new Moust\Silex\Provider\CacheServiceProvider(), [
+    'caches.options' => [
+        'filesystem' => [
+            'driver'    => 'file',
+            'cache_dir' => '../cache'
+        ]
+    ]
+]);
 
 \TumblrPosts\Controller::route($app);
 
