@@ -1,0 +1,9 @@
+<?php
+
+$config = [
+    'tumblr_api_consumer_key' => 'sdkiufgbwe8bro',
+    'tumblr_api_consumer_secret' => 'sdkiufgbwe8bro',
+    'app_01' => [
+        'blog_name' => 'lorem_ipsum'
+    ]
+];

@@ -1,0 +1,11 @@
+{
+  "require": {
+    "tumblr/tumblr": "^0.4.0",
+    "silex/silex": "^2.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "TumblrPosts\\":"src/"
+    }
+  }
+}

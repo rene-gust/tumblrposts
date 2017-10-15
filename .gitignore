@@ -1,0 +1,7 @@
+# PHPUnit
+/phpunit.xml
+
+/vendor/*
+/.idea/*
+
+config.php
