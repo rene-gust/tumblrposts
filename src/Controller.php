@@ -33,16 +33,23 @@ class Controller
             $images = Posts::get($app, $client, Posts::TYPE_PHOTO);
             $cache->set('images', json_encode($images));
         } else {
-            $images = $cache->get('images');
+            $images = json_decode($cache->get('images'));
         }
 
         if (!$cache->hasValidCachedObject('videos')) {
             $videos = Posts::get($app, $client, Posts::TYPE_VIDEO);
             $cache->set('videos', json_encode($videos));
         } else {
-            $videos = $cache->get('videos');
+            $videos = json_decode($cache->get('videos'));
         }
 
-        return new JsonResponse(['images' => $images, 'videos' => $videos], 200, ['Access-Control-Allow-Origin' => '*']);
+        return new JsonResponse(
+            ['images' => $images, 'videos' => $videos],
+            200,
+            [
+                'Access-Control-Allow-Origin' => '*',
+                'Content-Type' => 'application/json; charset=utf-8'
+            ]
+        );
     }
 }
