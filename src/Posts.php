@@ -18,38 +18,42 @@ class Posts
     public static function get(Application $app, Client $client, $type = self::TYPE_PHOTO)
     {
         $result = [];
-        for($i = 0; $i < 10; ++$i) {
-            $result = array_merge($result, self::getItems($client, $app, $type, $i));
+        $offsetMaxKey = $type == self::TYPE_PHOTO ? 'images_offset_max' : 'videos_offset_max';
+        foreach ($app['config']['app_01']['blogs'] as $blog) {
+            for ($i = 0; $i < $blog[$offsetMaxKey]; ++$i) {
+                $result = array_merge($result, self::getItems($client, $type, $blog['name'], $i));
+            }
         }
+
         return $result;
     }
 
     /**
-     * @param Client      $client
-     * @param Application $app
-     * @param string      $type
-     * @param string      $offset
+     * @param Client $client
+     * @param string $type
+     * @param string $blogName
+     * @param string $offset
      * @return Model\TumblrImage[]|Model\TumblrVideo[]
      */
-    private static function getItems(Client $client, Application $app, $type, $offset)
+    private static function getItems(Client $client, $type, $blogName, $offset)
     {
         if (self::TYPE_PHOTO == $type) {
             return BlogPostsResponseParser::getTumblrImages(
                 $client->getBlogPosts(
-                    $app['config']['app_01']['blog_name'],
+                    $blogName,
                     [
-                        'type' => $type,
-                        'offset' => $offset
+                        'type'   => $type,
+                        'offset' => $offset,
                     ]
                 )
             );
         } elseif (self::TYPE_VIDEO == $type) {
             return BlogPostsResponseParser::getTumblrVideos(
                 $client->getBlogPosts(
-                    $app['config']['app_01']['blog_name'],
+                    $blogName,
                     [
-                        'type' => $type,
-                        'offset' => $offset
+                        'type'   => $type,
+                        'offset' => $offset,
                     ]
                 )
             );

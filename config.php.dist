@@ -4,6 +4,12 @@ $config = [
     'tumblr_api_consumer_key' => 'sdkiufgbwe8bro',
     'tumblr_api_consumer_secret' => 'sdkiufgbwe8bro',
     'app_01' => [
-        'blog_name' => 'lorem_ipsum'
+        'blogs' => [
+            [
+                'name' => 'puppies-galore',
+                'images_offset_max' => 5,
+                'videos_offset_max' => 10
+            ]
+        ]
     ]
 ];

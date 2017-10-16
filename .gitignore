@@ -4,5 +4,7 @@
 /vendor/*
 /.idea/*
 
+/cache
+
 composer.phar
 config.php

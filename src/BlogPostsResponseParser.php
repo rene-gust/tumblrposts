@@ -33,6 +33,8 @@ class BlogPostsResponseParser
     {
         $videos = [];
         foreach ($response->posts as $post) {
+            // if empty its probably an instagram video, currently we ignore them
+            if (!empty($post->video_url)) {
                 $video = new TumblrVideo();
                 $video->noteCount = $post->note_count;
                 $video->duration = $post->duration;
@@ -42,6 +44,7 @@ class BlogPostsResponseParser
                 $video->thumbnailWidth = $post->thumbnail_width;
                 $video->thumbnailHeight = $post->thumbnail_height;
                 $videos[] = $video;
+            }
         }
         return $videos;
     }
