@@ -14,14 +14,16 @@ class BlogPostsResponseParser
     {
         $images = [];
         foreach ($response->posts as $post) {
-            foreach($post->photos as $photo) {
-                $image = new TumblrImage();
-                $image->url = $photo->original_size->url;
-                $image->width = $photo->original_size->width;
-                $image->height = $photo->original_size->height;
-                $images[] = $image;
+            foreach ($post->photos as $photo) {
+                $image            = new TumblrImage();
+                $image->url       = $photo->original_size->url;
+                $image->width     = $photo->original_size->width;
+                $image->height    = $photo->original_size->height;
+                $image->timestamp = $post->timestamp;
+                $images[]         = $image;
             }
         }
+
         return $images;
     }
 
@@ -35,17 +37,20 @@ class BlogPostsResponseParser
         foreach ($response->posts as $post) {
             // if empty its probably an instagram video, currently we ignore them
             if (!empty($post->video_url)) {
-                $video = new TumblrVideo();
-                $video->noteCount = $post->note_count;
-                $video->duration = $post->duration;
-                $video->format = $post->format;
-                $video->videoUrl = $post->video_url;
-                $video->thumbnailUrl = $post->thumbnail_url;
-                $video->thumbnailWidth = $post->thumbnail_width;
+                $video                  = new TumblrVideo();
+                $video->noteCount       = $post->note_count;
+                $video->duration        = $post->duration;
+                $video->format          = $post->format;
+                $video->videoUrl        = $post->video_url;
+                $video->thumbnailUrl    = $post->thumbnail_url;
+                $video->thumbnailWidth  = $post->thumbnail_width;
                 $video->thumbnailHeight = $post->thumbnail_height;
+                $video->timestamp       = $post->timestamp;
+                $video->playerHtml      = $post->player[count($post->player)-1]->embed_code;
                 $videos[] = $video;
             }
         }
+
         return $videos;
     }
 }

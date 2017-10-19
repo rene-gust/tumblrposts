@@ -24,32 +24,32 @@ class Controller
      */
     public function posts(Application $app)
     {
-
         $cache = $app['cache'];
         $cache = new Cache($cache);
         $client = new Client($app['config']['tumblr_api_consumer_key'], $app['config']['tumblr_api_consumer_secret']);
 
-        if (!$cache->hasValidCachedObject('images')) {
-            $images = Posts::get($app, $client, Posts::TYPE_PHOTO);
-            $cache->set('images', json_encode($images));
-        } else {
-            $images = json_decode($cache->get('images'));
-        }
+        $items = [];
+        if (!$cache->hasValidCachedObject('app01_items')) {
+            $items = array_merge($items, Posts::get($app, $client, Posts::TYPE_PHOTO));
+            $items = array_merge($items, Posts::get($app, $client, Posts::TYPE_VIDEO));
 
-        if (!$cache->hasValidCachedObject('videos')) {
-            $videos = Posts::get($app, $client, Posts::TYPE_VIDEO);
-            $cache->set('videos', json_encode($videos));
+            uasort($items, '\TumblrPosts\Model\AbstractItem::sort');
+            $items = array_values($items);
+
+            $itemsEncoded = json_encode($items);
+            $cache->set('app01_items', $itemsEncoded);
         } else {
-            $videos = json_decode($cache->get('videos'));
+            $itemsEncoded = $cache->get('app01_items');
         }
 
         return new JsonResponse(
-            ['images' => $images, 'videos' => $videos],
+            $itemsEncoded,
             200,
             [
                 'Access-Control-Allow-Origin' => '*',
                 'Content-Type' => 'application/json; charset=utf-8'
-            ]
+            ],
+            true
         );
     }
 }

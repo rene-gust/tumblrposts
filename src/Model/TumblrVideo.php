@@ -2,8 +2,14 @@
 
 namespace TumblrPosts\Model;
 
-class TumblrVideo
+use TumblrPosts\Posts;
+
+class TumblrVideo extends AbstractItem
 {
+    public function __construct() {
+        $this->type = Posts::TYPE_VIDEO;
+    }
+
     public $format;
     public $noteCount;
     public $videoUrl;
@@ -11,4 +17,5 @@ class TumblrVideo
     public $thumbnailUrl;
     public $thumbnailWidth;
     public $thumbnailHeight;
+    public $playerHtml;
 }
