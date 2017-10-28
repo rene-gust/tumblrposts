@@ -41,12 +41,12 @@ class Posts
      * @param string $type
      * @param string $blogName
      * @param array  $options
-     * @return Model\TumblrImage[]|Model\TumblrVideo[]
+     * @return Model\TumblrPhoto[]|Model\TumblrVideo[]
      */
     private static function getItems(Client $client, $type, $blogName, $options)
     {
         if (self::TYPE_PHOTO == $type) {
-            return BlogPostsResponseParser::getTumblrImages($client->getBlogPosts($blogName, $options));
+            return BlogPostsResponseParser::getTumblrPhotos($client->getBlogPosts($blogName, $options));
         } elseif (self::TYPE_VIDEO == $type) {
             return BlogPostsResponseParser::getTumblrVideos($client->getBlogPosts($blogName, $options));
         }

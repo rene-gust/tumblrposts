@@ -4,7 +4,7 @@ namespace TumblrPosts\Model;
 
 use TumblrPosts\Posts;
 
-class TumblrImage extends AbstractItem
+class TumblrPhoto extends AbstractItem
 {
     public function __construct() {
         $this->type = Posts::TYPE_PHOTO;

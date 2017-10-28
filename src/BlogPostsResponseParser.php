@@ -2,15 +2,15 @@
 
 namespace TumblrPosts;
 
-use TumblrPosts\Model\TumblrImage;
+use TumblrPosts\Model\TumblrPhoto;
 use TumblrPosts\Model\TumblrVideo;
 
 class BlogPostsResponseParser
 {
     /**
-     * @return TumblrImage[]
+     * @return TumblrPhoto[]
      */
-    public static function getTumblrImages($response)
+    public static function getTumblrPhotos($response)
     {
         $images = [];
         foreach ($response->posts as $post) {
@@ -23,7 +23,7 @@ class BlogPostsResponseParser
     private function getPhotos($post) {
         $images = [];
         foreach ($post->photos as $photo) {
-            $image            = new TumblrImage();
+            $image            = new TumblrPhoto();
             $image->url       = $photo->original_size->url;
             $image->width     = $photo->original_size->width;
             $image->height    = $photo->original_size->height;

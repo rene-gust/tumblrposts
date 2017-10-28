@@ -75,8 +75,6 @@ class Controller
             )
         );
 
-        uasort($items, '\TumblrPosts\Model\AbstractItem::sort');
-
         return array_values($items);
     }
 
