@@ -11,17 +11,25 @@ class Posts
     const TYPE_VIDEO = 'video';
 
     /**
-     * @param Application $app
-     * @param Client      $client
+     * @param array  $blogs
+     * @param Client $client
+     * @param array  $options
      * @return array
      */
-    public static function get(Application $app, Client $client, $type = self::TYPE_PHOTO)
+    public static function get(array $blogs, Client $client, $options = [])
     {
         $result = [];
-        $offsetMaxKey = $type == self::TYPE_PHOTO ? 'images_offset_max' : 'videos_offset_max';
-        foreach ($app['config']['app_01']['blogs'] as $blog) {
+        $type = self::TYPE_PHOTO;
+        if (array_key_exists('type', $options)) {
+            $type = $options['type'];
+        } else {
+            $options['type'] = $type;
+        }
+        $offsetMaxKey = ($type == self::TYPE_PHOTO) ? 'images_offset_max' : 'videos_offset_max';
+        foreach ($blogs as $blog) {
             for ($i = 0; $i < $blog[$offsetMaxKey]; ++$i) {
-                $result = array_merge($result, self::getItems($client, $type, $blog['name'], $i));
+                $options['offset'] = $i;
+                $result = array_merge($result, self::getItems($client, $type, $blog['name'], $options));
             }
         }
 
@@ -32,31 +40,15 @@ class Posts
      * @param Client $client
      * @param string $type
      * @param string $blogName
-     * @param string $offset
+     * @param array  $options
      * @return Model\TumblrImage[]|Model\TumblrVideo[]
      */
-    private static function getItems(Client $client, $type, $blogName, $offset)
+    private static function getItems(Client $client, $type, $blogName, $options)
     {
         if (self::TYPE_PHOTO == $type) {
-            return BlogPostsResponseParser::getTumblrImages(
-                $client->getBlogPosts(
-                    $blogName,
-                    [
-                        'type'   => $type,
-                        'offset' => $offset,
-                    ]
-                )
-            );
+            return BlogPostsResponseParser::getTumblrImages($client->getBlogPosts($blogName, $options));
         } elseif (self::TYPE_VIDEO == $type) {
-            return BlogPostsResponseParser::getTumblrVideos(
-                $client->getBlogPosts(
-                    $blogName,
-                    [
-                        'type'   => $type,
-                        'offset' => $offset,
-                    ]
-                )
-            );
+            return BlogPostsResponseParser::getTumblrVideos($client->getBlogPosts($blogName, $options));
         }
     }
 }
