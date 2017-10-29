@@ -15,7 +15,7 @@ class Controller
     public static function route(Application $app)
     {
         $app->get('/app01/posts', 'TumblrPosts\Controller::app01Posts');
-        $app->get('/app02/posts', 'TumblrPosts\Controller::app02Posts');
+        $app->get('/app02/posts/{tags}', 'TumblrPosts\Controller::app02Posts');
     }
 
     /**
@@ -51,27 +51,34 @@ class Controller
 
     /**
      * @param Application $app
+     * @param string      $tags
      * @return JsonResponse
      */
-    public function app02Posts(Application $app)
+    public function app02Posts(Application $app, $tags)
     {
         return $this->getPostsResponse(
             $app,
-            'app02_items',
+            'app02_items_' . $tags,
             $app['config']['tumblr_api_consumer_key'],
             $app['config']['tumblr_api_consumer_secret'],
-            'self::getApp02Items'
+            'self::getApp02Items',
+            explode(',', $tags)
         );
     }
 
-    public function getApp02Items($app, $client)
+    /**
+     * @param Application $app
+     * @param Client      $client
+     * @param array       $tags
+     * @return array
+     */
+    public function getApp02Items(Application $app, Client $client, $tags)
     {
         $items = array_merge(
             [],
             Tagged::get(
-                $app['config']['app_02']['tags'],
-                $client,
-                ['offset_max' => $app['config']['app_02']['offset_max']]
+                $tags,
+                $client
             )
         );
 
@@ -83,16 +90,17 @@ class Controller
      * @param string      $cacheKey
      * @param string      $apiKey
      * @param string      $apiSecret
+     * @param array       $tags
      * @return JsonResponse
      */
-    private function getPostsResponse(Application $app, $cacheKey, $apiKey, $apiSecret, $getItemsCallable)
+    private function getPostsResponse(Application $app, $cacheKey, $apiKey, $apiSecret, $getItemsCallable, $tags)
     {
         $cache = new Cache($app['cache']);
         $client = new Client($apiKey, $apiSecret);
 
         $items = [];
         if (!$cache->hasValidCachedObject($cacheKey)) {
-            $items = call_user_func($getItemsCallable, $app, $client);
+            $items = call_user_func($getItemsCallable, $app, $client, $tags);
             $itemsEncoded = json_encode($items);
             $cache->set($cacheKey, $itemsEncoded);
         } else {

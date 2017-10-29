@@ -14,14 +14,11 @@ class Tagged
      * @param Client $client
      * @return array
      */
-    public static function get(array $tags, Client $client, $options)
+    public static function get(array $tags, Client $client)
     {
         $result = [];
         foreach ($tags as $tag) {
-            for ($i = 0; $i < $options['offset_max']; ++$i) {
-                $options['offset'] = $i;
-                $result = array_merge($result, BlogPostsResponseParser::getTagged($client->getTaggedPosts($tag)));
-            }
+            $result = array_merge($result, BlogPostsResponseParser::getTagged($client->getTaggedPosts($tag)));
         }
 
         $result = self::filterDoubleContent($result);
