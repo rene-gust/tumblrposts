@@ -11,14 +11,23 @@ class Tagged
     private static $urls = [];
     /**
      * @param array  $tags
-     * @param Client $client
+     * @param string $apiKey
      * @return array
      */
-    public static function get(array $tags, Client $client)
+    public static function get(array $tags, $apiKey)
     {
         $result = [];
         foreach ($tags as $tag) {
-            $result = array_merge($result, BlogPostsResponseParser::getTagged($client->getTaggedPosts($tag)));
+            $tag = urlencode($tag);
+            $responseJson = file_get_contents("https://api.tumblr.com/v2/tagged?tag=$tag&api_key=$apiKey");
+            if ($responseJson === false) {
+                return $result;
+            }
+            $responseObject = json_decode($responseJson);
+            if (empty($responseObject->response)) {
+                return $result;
+            }
+            $result = array_merge($result, BlogPostsResponseParser::getTagged($responseObject->response));
         }
 
         $result = self::filterDoubleContent($result);

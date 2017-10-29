@@ -11,5 +11,9 @@ $config = [
                 'videos_offset_max' => 10
             ]
         ]
+    ],
+    'app_02' => [
+        'tumblr_api_consumer_key' => 'sdkiufgbwe8bro',
+        'tumblr_api_consumer_secret' => 'sdkiufgbwe8bro'
     ]
 ];

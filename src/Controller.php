@@ -59,8 +59,6 @@ class Controller
         return $this->getPostsResponse(
             $app,
             'app02_items_' . $tags,
-            $app['config']['tumblr_api_consumer_key'],
-            $app['config']['tumblr_api_consumer_secret'],
             'self::getApp02Items',
             explode(',', $tags)
         );
@@ -68,17 +66,16 @@ class Controller
 
     /**
      * @param Application $app
-     * @param Client      $client
      * @param array       $tags
      * @return array
      */
-    public function getApp02Items(Application $app, Client $client, $tags)
+    public function getApp02Items(Application $app, $tags)
     {
         $items = array_merge(
             [],
             Tagged::get(
                 $tags,
-                $client
+                $app['config']['app_02']['tumblr_api_consumer_key']
             )
         );
 
@@ -88,19 +85,16 @@ class Controller
     /**
      * @param Application $app
      * @param string      $cacheKey
-     * @param string      $apiKey
-     * @param string      $apiSecret
      * @param array       $tags
      * @return JsonResponse
      */
-    private function getPostsResponse(Application $app, $cacheKey, $apiKey, $apiSecret, $getItemsCallable, $tags)
+    private function getPostsResponse(Application $app, $cacheKey, $getItemsCallable, $tags)
     {
         $cache = new Cache($app['cache']);
-        $client = new Client($apiKey, $apiSecret);
 
         $items = [];
         if (!$cache->hasValidCachedObject($cacheKey)) {
-            $items = call_user_func($getItemsCallable, $app, $client, $tags);
+            $items = call_user_func($getItemsCallable, $app, $tags);
             $itemsEncoded = json_encode($items);
             $cache->set($cacheKey, $itemsEncoded);
         } else {
