@@ -4,6 +4,7 @@ namespace TumblrPosts;
 
 use Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Tumblr\API\Client;
 use TumblrPosts\Cache\Cache;
 
@@ -14,34 +15,37 @@ class Controller
      */
     public static function route(Application $app)
     {
-        $app->get('/app01/posts', 'TumblrPosts\Controller::app01Posts');
+        $app->post('/app01/posts', 'TumblrPosts\Controller::app01Posts');
         $app->get('/app02/posts/{tags}', 'TumblrPosts\Controller::app02Posts');
     }
 
     /**
      * @param Application $app
+     * @param Request     $request
      * @return JsonResponse
      */
-    public function app01Posts(Application $app)
+    public function app01Posts(Application $app, Request $request)
     {
+        $blogs = json_decode($request->getContent(), true);
         return $this->getPostsResponse(
             $app,
             'app01_items',
-            $app['config']['tumblr_api_consumer_key'],
-            $app['config']['tumblr_api_consumer_secret'],
-            'self::getApp01Items'
+            'self::getApp01Items',
+            $blogs
         );
     }
 
-    private function getApp01Items(Application $app, $client)
+    private function getApp01Items(Application $app, $blogs)
     {
+        $client = new Client($app['config']['tumblr_api_consumer_key'], $app['config']['tumblr_api_consumer_secret']);
+
         $items = array_merge(
             [],
-            Posts::get($app['config']['app_01']['blogs'], $client, ['type' => Posts::TYPE_PHOTO])
+            Posts::get($blogs, $client, ['type' => Posts::TYPE_PHOTO])
         );
         $items = array_merge(
             $items,
-            Posts::get($app['config']['app_01']['blogs'], $client, ['type' => Posts::TYPE_VIDEO])
+            Posts::get($blogs, $client, ['type' => Posts::TYPE_VIDEO])
         );
 
         uasort($items, '\TumblrPosts\Model\AbstractItem::sort');
