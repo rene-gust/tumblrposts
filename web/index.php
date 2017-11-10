@@ -15,7 +15,11 @@ $app->register(new Moust\Silex\Provider\CacheServiceProvider(), [
         ]
     ]
 ]);
+$app->register(new JDesrosiers\Silex\Provider\CorsServiceProvider(), [
+    "cors.allowOrigin" => "*",
+]);
 
 \TumblrPosts\Controller::route($app);
 
+$app["cors-enabled"]($app);
 $app->run();
