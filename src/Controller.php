@@ -5,6 +5,8 @@ namespace TumblrPosts;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Tumblr\API\Client;
 use TumblrPosts\Cache\Cache;
 
@@ -17,6 +19,7 @@ class Controller
     {
         $app->post('/app01/posts', 'TumblrPosts\Controller::app01Posts');
         $app->get('/app02/posts/{tags}', 'TumblrPosts\Controller::app02Posts');
+        $app->post('/app03', 'TumblrPosts\Controller::app03Url');
     }
 
     /**
@@ -113,6 +116,32 @@ class Controller
                 'Content-Type' => 'application/json; charset=utf-8',
             ],
             true
+        );
+    }
+
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @return Response
+     */
+    public function app03Url(Application $app, Request $request) {
+        $data = json_decode($request->getContent(), true);
+        $url = $data['url'] ?? '';
+        if (empty($url)) {
+            throw new NotFoundHttpException();
+        }
+        $cache = new Cache($app['cache']);
+        if (!$cache->hasValidCachedObject($url)) {
+            $content = file_get_contents($url);
+            $cache->set($url, $content);
+        } else {
+            $content = $cache->get($url);
+        }
+
+        return new Response(
+            $content,
+            200,
+            ['Access-Control-Allow-Origin' => '*']
         );
     }
 }
