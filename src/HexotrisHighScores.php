@@ -57,6 +57,14 @@ class HexotrisHighScores
             if ($highScore['time'] < $todayMidight->getTimestamp() ) {
                 unset($highScores['day'][$key]);
             }
+            if (empty($highScores['day'][$key]['name']) && $highScores['day'][$key]['number'] > 0) {
+                $highScores['day'][$key]['name'] = 'anonymous';
+            }
+        }
+        foreach ($highScores['all_time'] as $key => $highScore) {
+            if (empty($highScore['name'])) {
+                $highScores['all_time'][$key]['name'] = 'anonymous';
+            }
         }
         return $highScores;
     }
@@ -72,7 +80,7 @@ class HexotrisHighScores
         $todayMidight = new \DateTime(date('Y-m-d 00:00:00'));
         foreach ($highScores['day'] as $key => $highScore) {
             if ($highScore['number'] < $number || $todayMidight->getTimestamp() > $highScore['time']) {
-                $highScores['day'][$key] = ['name' => $name, 'number' => (int)$number, 'time' => time()];
+                $this->insertScore($highScores, 'day', $key, ['name' => $name, 'number' => (int)$number, 'time' => time()]);
                 $highScoreChanged = true;
                 break;
             }
@@ -80,7 +88,7 @@ class HexotrisHighScores
 
         foreach ($highScores['all_time'] as $key => $highScore) {
             if ($highScore['number'] < $number) {
-                $highScores['all_time'][$key] = ['name' => $name, 'number' => (int)$number];
+                $this->insertScore($highScores, 'all_time', $key, ['name' => $name, 'number' => (int)$number, 'time' => time()]);
                 $highScoreChanged = true;
                 break;
             }
@@ -92,6 +100,13 @@ class HexotrisHighScores
         }
 
         return $this->getHighScores();
+    }
+
+    private function insertScore(&$highScores, $type, $key, $data) {
+        for ($i = 9; $i > $key; --$i) {
+            $highScores[$type][$i] = $highScores[$type][$i - 1];
+        }
+        $highScores[$type][$key] = $data;
     }
 
     /**
