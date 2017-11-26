@@ -20,6 +20,8 @@ class Controller
         $app->post('/app01/posts', 'TumblrPosts\Controller::app01Posts');
         $app->get('/app02/posts/{tags}', 'TumblrPosts\Controller::app02Posts');
         $app->post('/app03', 'TumblrPosts\Controller::app03Url');
+        $app->post('/hexotris', 'TumblrPosts\Controller::hexotrisPost');
+        $app->get('/hexotris', 'TumblrPosts\Controller::hexotrisGet');
     }
 
     /**
@@ -143,5 +145,29 @@ class Controller
             200,
             ['Access-Control-Allow-Origin' => '*']
         );
+    }
+
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function hexotrisPost(Application $app, Request $request) {
+        $service = new HexotrisHighScores($app['config']['hexotris']['file']);
+        $highScores = $service->setHighScore(
+            $request->request->get('highScoreName', 'anonymous'),
+            $request->request->get('highScoreNumber', 0)
+        );
+
+        return new JsonResponse($highScores);
+    }
+
+    /**
+     * @param Application $app
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function hexotrisGet(Application $app, Request $request) {
+        return new JsonResponse((new HexotrisHighScores($app['config']['hexotris']['file']))->getHighScores());
     }
 }
