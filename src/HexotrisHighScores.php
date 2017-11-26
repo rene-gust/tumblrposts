@@ -67,11 +67,12 @@ class HexotrisHighScores
      * @return array
      */
     public function setHighScore($name, $number) {
-        $highScores = $this->readHighScores();
+        $highScores = $this->highScores;
         $highScoreChanged = false;
+        $todayMidight = new \DateTime(date('Y-m-d 00:00:00'));
         foreach ($highScores['day'] as $key => $highScore) {
-            if ($highScore['number'] < $number) {
-                $highScores['day'][$key] = ['name' => $name, 'number' => (int)$number];
+            if ($highScore['number'] < $number || $todayMidight->getTimestamp() > $highScore['time']) {
+                $highScores['day'][$key] = ['name' => $name, 'number' => (int)$number, 'time' => time()];
                 $highScoreChanged = true;
                 break;
             }
@@ -86,6 +87,7 @@ class HexotrisHighScores
         }
 
         if ($highScoreChanged) {
+            $this->highScores = $highScores;
             file_put_contents($this->filePath, serialize($highScores));
         }
 
