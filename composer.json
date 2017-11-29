@@ -3,7 +3,8 @@
     "tumblr/tumblr": "^0.4.0",
     "silex/silex": "^2.2",
     "moust/silex-cache": "^2.0",
-    "jdesrosiers/silex-cors-provider": "~1.0"
+    "jdesrosiers/silex-cors-provider": "~1.0",
+    "twig/twig": "^2.4"
   },
   "autoload": {
     "psr-4": {

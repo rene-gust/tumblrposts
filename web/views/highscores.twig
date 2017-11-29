@@ -1,0 +1,18 @@
+<table border="5">
+    <tr>
+{% for key, scoreData in highScores %}
+    <td>
+    {{ key }}:
+        <table>
+            {% for score in scoreData%}
+                <tr>
+                    <td>Name: {{ score.name }}</td>
+                    <td>Score: {{ score.number }}</td>
+                    <td>Time: {{ score.time|date("d.m.Y H:i:s") }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </td>
+{% endfor %}
+    </tr>
+</table>

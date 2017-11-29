@@ -22,6 +22,7 @@ class Controller
         $app->post('/app03', 'TumblrPosts\Controller::app03Url');
         $app->post('/hexotris', 'TumblrPosts\Controller::hexotrisPost');
         $app->get('/hexotris', 'TumblrPosts\Controller::hexotrisGet');
+        $app->get('/hexotris/show-scores', 'TumblrPosts\Controller::hexotrisShowHighScores');
         $app->get('/ip', 'TumblrPosts\Controller::ip');
     }
 
@@ -179,5 +180,11 @@ class Controller
      */
     public function ip(Application $app, Request $request) {
         return new JsonResponse(['ip' => $request->getClientIp()]);
+    }
+
+    public function hexotrisShowHighScores(Application $app, Request $request)
+    {
+        $service = new HexotrisHighScores($app['config']['hexotris']['file']);
+        return $app['twig']->render('highscores.twig', ['highScores' => $service->getHighScores()]);
     }
 }
