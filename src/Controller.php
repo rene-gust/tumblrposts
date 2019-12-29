@@ -18,7 +18,7 @@ class Controller
     public static function route(Application $app)
     {
         $app->post('/app01/posts', 'TumblrPosts\Controller::app01Posts');
-        $app->get('/app02/posts/{tags}', 'TumblrPosts\Controller::app02Posts');
+        $app->get('/app02/posts/{tags}/{beforeTimestamp}', 'TumblrPosts\Controller::app02Posts')->value('beforeTimestamp', 0);
         $app->post('/app03', 'TumblrPosts\Controller::app03Url');
         $app->post('/hexotris', 'TumblrPosts\Controller::hexotrisPost');
         $app->get('/hexotris', 'TumblrPosts\Controller::hexotrisGet');
@@ -63,31 +63,38 @@ class Controller
     /**
      * @param Application $app
      * @param string      $tags
+     * @param int         $beforeTimestamp
      * @return JsonResponse
      */
-    public function app02Posts(Application $app, $tags)
+    public function app02Posts(Application $app, $tags, $beforeTimestamp)
     {
+        $app['tumblr_cache'] = new Cache($app['cache']);
+
         return $this->getPostsResponse(
             $app,
-            'app02_items_' . $tags,
+            $app['tumblr_cache']->getTaggedKey($tags, (int)$beforeTimestamp),
             'self::getApp02Items',
-            explode(',', $tags)
+            explode(',', $tags),
+            (int) $beforeTimestamp
         );
     }
 
     /**
      * @param Application $app
      * @param array       $tags
+     * @param int         $beforeTimestamp
      * @return array
      */
-    public function getApp02Items(Application $app, $tags)
+    public function getApp02Items(Application $app, $tags, $beforeTimestamp)
     {
         $items = array_merge(
             [],
             Tagged::get(
                 $tags,
                 $app['config']['app_02']['tumblr_api_consumer_key'],
-                $app['config']['app_02']['tumblr_api_consumer_secret']
+                $app['config']['app_02']['tumblr_api_consumer_secret'],
+                $beforeTimestamp,
+                $app['tumblr_cache']
             )
         );
 
@@ -98,19 +105,19 @@ class Controller
      * @param Application $app
      * @param string      $cacheKey
      * @param array       $tags
+     * @param int         $beforeTimestamp
      * @return JsonResponse
      */
-    private function getPostsResponse(Application $app, $cacheKey, $getItemsCallable, $tags)
+    private function getPostsResponse(Application $app, $cacheKey, $getItemsCallable, $tags, $beforeTimestamp)
     {
-        $cache = new Cache($app['cache']);
+        $tumblrCache = $app['tumblr_cache'];
 
-        $items = [];
-        if (!$cache->hasValidCachedObject($cacheKey)) {
-            $items = call_user_func($getItemsCallable, $app, $tags);
+        if (!$tumblrCache->hasValidCachedObject($cacheKey)) {
+            $items = call_user_func($getItemsCallable, $app, $tags, $beforeTimestamp);
             $itemsEncoded = json_encode($items);
-            $cache->set($cacheKey, $itemsEncoded);
+            $tumblrCache->set($cacheKey, $itemsEncoded);
         } else {
-            $itemsEncoded = $cache->get($cacheKey);
+            $itemsEncoded = $tumblrCache->get($cacheKey);
         }
 
         return new JsonResponse(

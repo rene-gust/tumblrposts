@@ -6,21 +6,21 @@ use Moust\Silex\Cache\CacheInterface;
 
 class Cache
 {
-    const TTL = 60 * 60 * 2;
+    const TTL = 60 * 15;
 
-    private static $timeKey = 'saved_time';
-    private static $objectKey = 'saved_object';
+    protected static $timeKey = 'saved_time';
+    protected static $objectKey = 'saved_object';
 
     /**
      * @var CacheInterface
      */
-    private $moustCache;
+    protected $moustCache;
 
     /**
      * seconds
      * @var int
      */
-    private $ttl;
+    protected $ttl;
 
     public function __construct(CacheInterface $cache, $ttl = self::TTL)
     {
@@ -53,5 +53,10 @@ class Cache
             $predisObject = $this->moustCache->fetch($key);
             return $predisObject[self::$objectKey];
         }
+    }
+
+    public function getTaggedKey(string $tags, int $beforeTimestamp)
+    {
+        return 'tagged_tumblr_posts_' . $tags . '_' . $beforeTimestamp;
     }
 }

@@ -65,4 +65,14 @@ class Post
         return $post;
     }
 
+
+    /**
+     * @param $a
+     * @param $b
+     * @return bool
+     */
+    public static function sort(Post $a, Post $b)
+    {
+        return $a->timestamp < $b->timestamp;
+    }
 }
