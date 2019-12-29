@@ -1,0 +1,32 @@
+version: "2"
+services:
+  webserver:
+    image: nginx:1.13
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    group_add:
+      - www-data
+    volumes:
+      - "/rene/projects/tumblrposts/etc/nginx:/etc/nginx/conf.d"
+      - "/rene/projects/tumblrposts/etc/ssl/certs:/etc/ssl/certs"
+    volumes_from:
+      - php
+    networks:
+      - default
+  php:
+    build: ./php-fpm
+    restart: always
+    group_add:
+      - www-data
+    volumes:
+      - "/rene/projects/tumblrposts:/var/www"
+      - "/rene/projects/tumblrposts/var/log:/var/log"
+    environment:
+      - SSH_AUTH_SOCK
+    networks:
+      - default
+volumes:
+  esdata:
+    driver: local

@@ -86,7 +86,8 @@ class Controller
             [],
             Tagged::get(
                 $tags,
-                $app['config']['app_02']['tumblr_api_consumer_key']
+                $app['config']['app_02']['tumblr_api_consumer_key'],
+                $app['config']['app_02']['tumblr_api_consumer_secret']
             )
         );
 

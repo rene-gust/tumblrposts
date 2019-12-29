@@ -2,11 +2,23 @@
 
 namespace TumblrPosts;
 
+use TumblrPosts\Model\PhotoPost;
+use TumblrPosts\Model\Post;
+use TumblrPosts\Model\TextPost;
 use TumblrPosts\Model\TumblrPhoto;
 use TumblrPosts\Model\TumblrVideo;
+use TumblrPosts\Model\VideoPost;
 
 class BlogPostsResponseParser
 {
+    const POST_TYPE_TEXT   = 'text';
+    const POST_TYPE_QUOTE  = 'quote';
+    const POST_TYPE_ANSWER = 'answer';
+    const POST_TYPE_VIDEO  = 'video';
+    const POST_TYPE_AUDIO  = 'audio';
+    const POST_TYPE_PHOTO  = 'photo';
+    const POST_TYPE_CHAT   = 'chat';
+
     /**
      * @return TumblrPhoto[]
      */
@@ -20,7 +32,8 @@ class BlogPostsResponseParser
         return $images;
     }
 
-    private function getPhotos($post) {
+    private function getPhotos($post)
+    {
         $images = [];
         foreach ($post->photos as $photo) {
             $image            = new TumblrPhoto();
@@ -61,20 +74,28 @@ class BlogPostsResponseParser
         $video->thumbnailWidth  = $post->thumbnail_width;
         $video->thumbnailHeight = $post->thumbnail_height;
         $video->timestamp       = $post->timestamp;
-        $video->playerHtml      = $post->player[count($post->player)-1]->embed_code;
+        $video->playerHtml      = $post->player[count($post->player) - 1]->embed_code;
         return $video;
     }
 
-    public static function getTagged($response) {
-        $items = [];
+    public static function getTagged($response)
+    {
+        $parsedItems = [];
         foreach ($response as $item) {
-            if (!empty($item->photos)) {
-                $items = array_merge($items, self::getPhotos($item));
-            } elseif (!empty($item->video_url)) {
-                $items[] = self::getVideoFromPost($item);
+
+            if ($item->type == static::POST_TYPE_VIDEO) {
+                $parsedItem = VideoPost::fromResponse($item);
+            } elseif ($item->type == static::POST_TYPE_PHOTO) {
+                $parsedItem = PhotoPost::fromResponse($item);
+            } elseif ($item->type == static::POST_TYPE_TEXT) {
+                $parsedItem = TextPost::fromResponse($item);
+            }
+
+            if ($parsedItem instanceof Post) {
+                $parsedItems[] = $parsedItem;
             }
         }
 
-        return $items;
+        return $parsedItems;
     }
 }

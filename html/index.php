@@ -4,6 +4,8 @@ require '../vendor/autoload.php';
 
 require '../config.php';
 
+ob_start("ob_gzhandler");
+
 $app = new Silex\Application();
 
 $app['config'] = $config;
@@ -26,3 +28,5 @@ $app->register(new Silex\Provider\TwigServiceProvider(), array(
 
 $app["cors-enabled"]($app);
 $app->run();
+
+ob_end_flush();
