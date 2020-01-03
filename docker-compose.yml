@@ -9,8 +9,8 @@ services:
     group_add:
       - www-data
     volumes:
-      - "/rene/projects/tumblrposts/etc/nginx:/etc/nginx/conf.d"
-      - "/rene/projects/tumblrposts/etc/ssl/certs:/etc/ssl/certs"
+      - "./etc/nginx:/etc/nginx/conf.d"
+      - "./etc/ssl/certs:/etc/ssl/certs"
     volumes_from:
       - php
     networks:
@@ -21,12 +21,7 @@ services:
     group_add:
       - www-data
     volumes:
-      - "/rene/projects/tumblrposts:/var/www"
+      - "/rene/projects/tumblrposts/app:/var/www"
       - "/rene/projects/tumblrposts/var/log:/var/log"
-    environment:
-      - SSH_AUTH_SOCK
     networks:
       - default
-volumes:
-  esdata:
-    driver: local

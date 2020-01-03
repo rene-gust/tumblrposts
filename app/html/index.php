@@ -21,7 +21,7 @@ $app->register(new JDesrosiers\Silex\Provider\CorsServiceProvider(), [
     "cors.allowOrigin" => "*",
 ]);
 $app->register(new Silex\Provider\TwigServiceProvider(), array(
-    'twig.path' => __DIR__.'/views',
+    'twig.path' => __DIR__.'/../twig_views',
 ));
 
 \TumblrPosts\Controller::route($app);

@@ -1,10 +1,10 @@
 # PHPUnit
 /phpunit.xml
 
-/vendor/*
+app/vendor/*
 /.idea/*
 
-/cache
+app/cache
 
 composer.phar
-config.php
+app/config.php
