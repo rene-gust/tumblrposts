@@ -8,3 +8,5 @@ app/cache
 
 composer.phar
 app/config.php
+
+var/log
