@@ -32,7 +32,27 @@ class Post
             $post->text = $fullPost->body;
         }
 
+        static::filterLongLinksCaptionText($post);
+
         return $post;
+    }
+
+    protected static function filterLongLinksCaptionText(Post $post)
+    {
+        $post->caption = static::filterLongLinks($post->caption);
+        $post->text = static::filterLongLinks($post->text);
+    }
+
+    protected static function filterLongLinks($text)
+    {
+        if (preg_match('/(<a[^>]*>)([^<]+)(<\/a>)/', $text, $matches)) {
+            if (mb_strlen($matches[2]) > 20) {
+                $strippedLinkName = mb_substr($matches[2], 0, 20) . '…';
+                $text = preg_replace('/(<a[^>]*>)([^<]+)(<\/a>)/', "$1$strippedLinkName$3", $text);
+            }
+        }
+
+        return $text;
     }
 
 

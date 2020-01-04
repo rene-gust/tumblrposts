@@ -55,7 +55,7 @@ class Post
         $post->recommendedSource = $postFromResponse->recommended_source;
         $post->recommendedColor = $postFromResponse->recommended_color;
         $post->noteCount = $postFromResponse->note_count;
-        $post->caption = $postFromResponse->caption;
+        $post->caption = !empty($postFromResponse->caption) ? $postFromResponse->caption : null;;
         $post->canLike = $postFromResponse->can_like;
         $post->canReblog = $postFromResponse->can_reblog;
         $post->canSendInMessage = $postFromResponse->can_send_in_message;
