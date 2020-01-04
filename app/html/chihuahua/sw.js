@@ -23,7 +23,8 @@ self.addEventListener('install', function(e) {
                 'https://unpkg.com/onsenui@2.10.10/js/onsenui.min.js',
                 'https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js',
                 'https://cdn.plyr.io/3.5.6/plyr.js',
-                '/chihuahua/favicon.ico'
+                '/chihuahua/favicon.ico',
+                'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
             ]);
         })
     );

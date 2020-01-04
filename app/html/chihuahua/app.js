@@ -99,7 +99,7 @@ addBtn.style.display = 'none';
 
             if (plyrIds.length > 0) {
                 for (let i = 0; i < plyrIds.length; ++i) {
-                    initVideoJs(plyrIds[i]);
+                    initPlyr(plyrIds[i]);
                 }
             }
 
@@ -109,13 +109,12 @@ addBtn.style.display = 'none';
                 $('#post_list').append(
                     '<ons-list-item>' +
                     '    <ons-card>' +
-                    '<ins class="adsbygoogle"' +
-                    '  style="display:block; text-align:center;"' +
-                    '  data-ad-layout="in-article"' +
-                    '  data-ad-format="fluid"' +
-                    '  data-ad-client="ca-pub-9450457991119200"' +
-                    '  data-ad-slot="9433251636">' +
-                    '</ins>' +
+                    '<ins class="adsbygoogle"\n' +
+                    '     style="display:block"\n' +
+                    '     data-ad-client="ca-pub-9450457991119200"\n' +
+                    '     data-ad-slot="8046968024"\n' +
+                    '     data-ad-format="auto"\n' +
+                    '     data-full-width-responsive="true"></ins>' +
                     '    </ons-card>' +
                     '</ons-list-item>'
                 );
@@ -124,7 +123,7 @@ addBtn.style.display = 'none';
         }
     }
 
-    function initVideoJs(plyrId) {
+    function initPlyr(plyrId) {
         player = new Plyr('#' + plyrId);
 
         player.on('ready', event => {
