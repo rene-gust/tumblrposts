@@ -47,15 +47,6 @@ RUN echo 'deb http://s3-eu-west-1.amazonaws.com/tideways/packages debian main' >
     apt-get install --no-install-recommends -y \
     tideways-php
 
-#uncomment for shopware < 5.5
-#RUN cd /tmp \
-#    && curl -o ioncube.tar.gz http://downloads3.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz \
-#    && tar -xvvzf ioncube.tar.gz \
-#    && mv ioncube/ioncube_loader_lin_7.0.so /usr/lib/php/20151012 \
-#    && rm -Rf ioncube.tar.gz ioncube \
-#    && echo "zend_extension=/usr/lib/php/20151012/ioncube_loader_lin_7.0.so" > /etc/php/7.0/fpm/conf.d/00_docker-php-ext-ioncube_loader_lin_7.0.ini \
-#    && echo "zend_extension=/usr/lib/php/20151012/ioncube_loader_lin_7.0.so" > /etc/php/7.0/cli/conf.d/00_docker-php-ext-ioncube_loader_lin_7.0.ini
-
 # start in /var/www/html
 RUN echo "cd /var/www/html" > /root/.bashrc
 
@@ -77,14 +68,13 @@ COPY usr/local/bin/xdebug /usr/local/bin
 COPY usr/local/bin/tideways /usr/local/bin
 RUN chmod +x usr/local/bin/xdebug
 RUN chmod +x usr/local/bin/tideways
+RUN sed -i 's/^display_errors.*Off/display_errors = On/g' /etc/php/7.0/fpm/php.ini
+RUN sed -i 's/^display_startup_errors.*Off/display_startup_errors = On/g' /etc/php/7.0/fpm/php.ini
 
 COPY etc/php/7.0/mods-available/xdebug.ini /etc/php/7.0/mods-available/xdebug.ini
 COPY etc/php/7.0/mods-available/apcu.ini /etc/php/7.0/mods-available/apcu.ini
 COPY etc/php/7.0/mods-available/tideways.ini /etc/php/7.0/mods-available/tideways.ini
 
 RUN if [ -f "etc/hosts" ] ; then cat etc/hosts > /etc/hosts ; fi
-
-WORKDIR /var/www
-RUN ln -s /var/data data
 
 CMD ["/usr/sbin/php-fpm7.0"]

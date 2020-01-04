@@ -1,7 +1,7 @@
 version: "2"
 services:
-  webserver:
-    image: nginx:1.13
+  nginx:
+    build: ./docker/nginx
     restart: always
     ports:
       - 80:80
@@ -9,19 +9,19 @@ services:
     group_add:
       - www-data
     volumes:
-      - "./etc/nginx:/etc/nginx/conf.d"
-      - "./etc/ssl/certs:/etc/ssl/certs"
+      - "./docker/nginx/etc/nginx:/etc/nginx/conf.d"
+      - "./docker/nginx/etc/ssl/certs:/etc/ssl/certs"
     volumes_from:
       - php
     networks:
       - default
   php:
-    build: ./php-fpm
+    build: ./docker/php-fpm
     restart: always
     group_add:
       - www-data
     volumes:
       - "/rene/projects/tumblrposts/app:/var/www"
-      - "/rene/projects/tumblrposts/var/log:/var/log"
+      - "/rene/projects/tumblrposts/docker/var/log:/var/log"
     networks:
       - default
