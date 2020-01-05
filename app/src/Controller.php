@@ -113,7 +113,7 @@ class Controller
 
         if (!$tumblrCache->hasValidCachedObject($cacheKey)) {
             $items = call_user_func($getItemsCallable, $app, $tags, $beforeTimestamp);
-            $itemsEncoded = JSONEncoder::encode($items);
+            $itemsEncoded = JSONEncoder::encodePosts($items);
             $tumblrCache->set($cacheKey, $itemsEncoded);
         } else {
             $itemsEncoded = $tumblrCache->get($cacheKey);

@@ -17,7 +17,8 @@ class Tagged
     {
         $client = new TumblerClient($consumerKey, $consumerSecret);
 
-        $result = [];
+        $posts = [];
+        $tagPostCounts = [];
 
         if ($beforeTimestamp == 0) {
             $beforeTimestamp = time();
@@ -28,18 +29,20 @@ class Tagged
             $tag = urlencode($tag);
             $response = $client->getTaggedPosts($tag, ['before' => $beforeTimestamp]);
             if (!empty($response)) {
-                $result = array_merge($result, BlogPostsResponseParser::getTagged($response));
+                $postsForCurrentTag = BlogPostsResponseParser::getTagged($response);
+                $posts              = array_merge($posts, $postsForCurrentTag);
+                $tagPostCounts[$tag] = count($postsForCurrentTag);
             }
         }
 
         $tagHunter = new TagHunter();
-        $tagHunter->saveTags($result, implode('_', $tags));
+        $tagHunter->saveTags($posts, implode('_', $tags), $tagPostCounts);
 
-        $result = RelaxMomentsFilterResponse::filterDoubleContent($result);
-        $result = RelaxMomentsFilterResponse::filterRelevantProperties($result);
+        $posts = RelaxMomentsFilterResponse::filterDoubleContent($posts);
+        $posts = RelaxMomentsFilterResponse::filterRelevantProperties($posts);
 
-        uasort($result, '\TumblrPosts\Model\Filter\Post::sort');
+        uasort($posts, '\TumblrPosts\Model\Filter\Post::sort');
 
-        return $result;
+        return $posts;
     }
 }
