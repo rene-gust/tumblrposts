@@ -2,6 +2,7 @@
 
 namespace TumblrPosts;
 
+use TumblrPosts\Model\LinkPost;
 use TumblrPosts\Model\PhotoPost;
 use TumblrPosts\Model\Post;
 use TumblrPosts\Model\TextPost;
@@ -18,6 +19,7 @@ class BlogPostsResponseParser
     const POST_TYPE_AUDIO  = 'audio';
     const POST_TYPE_PHOTO  = 'photo';
     const POST_TYPE_CHAT   = 'chat';
+    const POST_TYPE_LINK   = 'link';
 
     /**
      * @return TumblrPhoto[]
@@ -83,12 +85,16 @@ class BlogPostsResponseParser
         $parsedItems = [];
         foreach ($response as $item) {
 
+            $parsedItem = null;
+
             if ($item->type == static::POST_TYPE_VIDEO) {
                 $parsedItem = VideoPost::fromResponse($item);
             } elseif ($item->type == static::POST_TYPE_PHOTO) {
                 $parsedItem = PhotoPost::fromResponse($item);
             } elseif ($item->type == static::POST_TYPE_TEXT) {
                 $parsedItem = TextPost::fromResponse($item);
+            } elseif ($item->type == static::POST_TYPE_LINK) {
+                $parsedItem = LinkPost::fromResponse($item);
             }
 
             if ($parsedItem instanceof Post) {

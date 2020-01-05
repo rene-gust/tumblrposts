@@ -32,14 +32,6 @@ addBtn.style.display = 'none';
         fetchNextPosts();
     })
 
-    document.addEventListener('scroll', function (event) {
-        var scrollHeight = $(document).height();
-        var scrollPosition = $(window).height() + $(window).scrollTop();
-        if ((scrollHeight - scrollPosition) / scrollHeight === 0) {
-            fetchNextPosts();
-        }
-    }, true);
-
     document.querySelector('.page__content').addEventListener('scroll', function (event) {
         var scrollTopPosition = event.target.scrollTop,
             scrollHeight = event.target.scrollHeight,
@@ -57,29 +49,35 @@ addBtn.style.display = 'none';
 
     });
 
-    var lastTimestamp = 0;
-    var receivedTimestamps = {};
-    var requestedTimestamps = {};
+    var lastReceivedTimeStamp = 0,
+        nextTimestampToRequest = 0,
+        receivedTimestamps = {},
+        requestedTimestamps = {};
 
     function fetchNextPosts() {
+        var requestedTimeStamp = nextTimestampToRequest;
 
-        if (requestedTimestamps[lastTimestamp]) {
+        if (!isNaN(requestedTimestamps[nextTimestampToRequest])) {
             return;
         }
 
-        var requestedLastTimeStamp = lastTimestamp;
-        requestedTimestamps[requestedLastTimeStamp] = requestedLastTimeStamp;
+        requestedTimestamps[nextTimestampToRequest] = nextTimestampToRequest;
+
+        if (nextTimestampToRequest > 0) {
+            $('#bottom-loading-modal').show();
+        }
 
         $.get({
-            url: '/app02/posts/chihuahua/' + lastTimestamp,
+            url: '/app02/posts/chihuahua,chihuahuas,chihuahualife,chihuahualove,chihuahuaworld,chihuahualovers,chihuahuasofinstagram,chihuahuastagram,chihuahualover/' + nextTimestampToRequest,
             success: function (response) {
-                var receivedLastTimestamp = response[response.length - 1].timestamp;
-                console.log(response);
+                lastReceivedTimeStamp = response[response.length - 1].timestamp;
 
-                if (!receivedTimestamps[requestedLastTimeStamp]) {
+                if (isNaN(receivedTimestamps[requestedTimeStamp])) {
                     renderPosts(response);
-                    receivedTimestamps[requestedLastTimeStamp] = requestedLastTimeStamp;
-                    lastTimestamp = receivedLastTimestamp;
+                    receivedTimestamps[requestedTimeStamp] = requestedTimeStamp;
+                    nextTimestampToRequest = lastReceivedTimeStamp + 1;
+                    $('#main-loading-modal').hide();
+                    $('#bottom-loading-modal').hide();
                 }
 
             },
@@ -144,7 +142,8 @@ addBtn.style.display = 'none';
         var i = 0,
             date = (new Date(post.timestamp * 1000)).toLocaleString(),
             textContent = '',
-            imageHtml = '';
+            imageHtml = '',
+            videoContainerId;
 
         if (post.photos) {
             for (var i = 0; i < post.photos.length; ++i) {
@@ -152,9 +151,7 @@ addBtn.style.display = 'none';
             }
         }
 
-        if (post.caption) {
-            textContent = post.caption;
-        } else if (post.text) {
+        if (post.text) {
             textContent = post.text
         }
 
@@ -174,7 +171,7 @@ addBtn.style.display = 'none';
 
             plyrIds.push(videoContainerId);
 
-            textContent += post.videos.embedCode;
+            textContent += '<div class="video-container">' + post.videos.embedCode + '</div>';
         }
 
         if (imageHtml) {

@@ -5,7 +5,7 @@ namespace TumblrPosts\Model;
 class PostPhoto
 {
     public $url;
-    public $with;
+    public $width;
     public $height;
 
     public static function fromResponse(\stdClass $photoFromResponse)
@@ -14,12 +14,12 @@ class PostPhoto
 
         if (property_exists($photoFromResponse, 'original_size')) {
             $photo->url = $photoFromResponse->original_size->url;
-            $photo->with = $photoFromResponse->original_size->width;
+            $photo->width = $photoFromResponse->original_size->width;
             $photo->height = $photoFromResponse->original_size->height;
         } elseif (property_exists($photoFromResponse, 'alt_sizes')) {
             $photoKey = static::findBiggestAltPhotoKey($photoFromResponse);
             $photo->url = $photoFromResponse->alt_sizes[$photoKey]->url;
-            $photo->with = $photoFromResponse->alt_sizes[$photoKey]->width;
+            $photo->width = $photoFromResponse->alt_sizes[$photoKey]->width;
             $photo->height = $photoFromResponse->alt_sizes[$photoKey]->height;
         }
 

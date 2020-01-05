@@ -3,7 +3,6 @@
 namespace TumblrPosts;
 
 use Tumblr\API\Client as TumblerClient;
-use TumblrPosts\Cache\Cache;
 
 class Tagged
 {
@@ -12,10 +11,9 @@ class Tagged
      * @param       $consumerKey
      * @param       $consumerSecret
      * @param       $beforeTimestamp
-     * @param Cache $cache
      * @return array
      */
-    public static function get(array $tags, $consumerKey, $consumerSecret, $beforeTimestamp, Cache $cache)
+    public static function get(array $tags, $consumerKey, $consumerSecret, $beforeTimestamp)
     {
         $client = new TumblerClient($consumerKey, $consumerSecret);
 
@@ -33,6 +31,9 @@ class Tagged
                 $result = array_merge($result, BlogPostsResponseParser::getTagged($response));
             }
         }
+
+        $tagHunter = new TagHunter();
+        $tagHunter->saveTags($result, implode('_', $tags));
 
         $result = RelaxMomentsFilterResponse::filterDoubleContent($result);
         $result = RelaxMomentsFilterResponse::filterRelevantProperties($result);

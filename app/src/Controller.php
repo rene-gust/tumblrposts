@@ -93,8 +93,7 @@ class Controller
                 $tags,
                 $app['config']['app_02']['tumblr_api_consumer_key'],
                 $app['config']['app_02']['tumblr_api_consumer_secret'],
-                $beforeTimestamp,
-                $app['tumblr_cache']
+                $beforeTimestamp
             )
         );
 
@@ -114,7 +113,7 @@ class Controller
 
         if (!$tumblrCache->hasValidCachedObject($cacheKey)) {
             $items = call_user_func($getItemsCallable, $app, $tags, $beforeTimestamp);
-            $itemsEncoded = json_encode($items);
+            $itemsEncoded = JSONEncoder::encode($items);
             $tumblrCache->set($cacheKey, $itemsEncoded);
         } else {
             $itemsEncoded = $tumblrCache->get($cacheKey);

@@ -24,6 +24,9 @@ self.addEventListener('install', function(e) {
                 'https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js',
                 'https://cdn.plyr.io/3.5.6/plyr.js',
                 '/chihuahua/favicon.ico',
+                '/chihuahua/images/ChihuahuaMomentsLogo.192.png',
+                '/chihuahua/images/ChihuahuaMomentsLogo.512.png',
+                '/chihuahua/images/loading.gif',
                 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
             ]);
         })
