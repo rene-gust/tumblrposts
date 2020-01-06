@@ -4,7 +4,8 @@
 app/vendor/*
 /.idea/*
 
-app/cache
+app/cache/*
+!app/cache/.gitkeep
 
 composer.phar
 app/config.php
