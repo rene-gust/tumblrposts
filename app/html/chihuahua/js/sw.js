@@ -15,19 +15,12 @@ self.addEventListener('install', function(e) {
                 '/chihuahua/',
                 '/chihuahua/index.html',
                 '/chihuahua/manifest.json',
-                '/chihuahua/styles.css',
-                '/chihuahua/app.js',
-                'https://unpkg.com/onsenui@2.10.10/css/onsenui.min.css',
-                'https://unpkg.com/onsenui@2.10.10/css/onsen-css-components.min.css',
-                'https://cdn.plyr.io/3.5.6/plyr.css',
-                'https://unpkg.com/onsenui@2.10.10/js/onsenui.min.js',
-                'https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js',
-                'https://cdn.plyr.io/3.5.6/plyr.js',
+                '/chihuahua/css/styles.css',
+                '/chihuahua/js/app.js',
                 '/chihuahua/favicon.ico',
                 '/chihuahua/images/ChihuahuaMomentsLogo.192.png',
                 '/chihuahua/images/ChihuahuaMomentsLogo.512.png',
-                '/chihuahua/images/loading.gif',
-                'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js'
+                '/chihuahua/images/loading.gif'
             ]);
         })
     );
