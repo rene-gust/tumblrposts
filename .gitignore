@@ -11,3 +11,5 @@ composer.phar
 app/config.php
 
 docker/var/log
+
+app/html/error_log
