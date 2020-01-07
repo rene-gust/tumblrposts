@@ -61,7 +61,7 @@ class RelaxMomentsFilterResponse
         return $text;
     }
 
-    protected function filterNonImageNoneVideoPosts($posts)
+    protected static function filterNonImageNoneVideoPosts($posts)
     {
         return array_filter(
             $posts,
@@ -73,7 +73,7 @@ class RelaxMomentsFilterResponse
 
     protected static function hasImageOrVideo(FilteredPost $post)
     {
-        if (count($post->photos) > 0) {
+        if ($post->photos && count($post->photos) > 0) {
             return true;
         }
 
