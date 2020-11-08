@@ -14,7 +14,7 @@ self.addEventListener('install', function(e) {
             return cache.addAll([
                 '/chihuahua/',
                 '/chihuahua/index.html',
-                '/chihuahua/manifest.json',
+                '/manifest.json',
                 '/chihuahua/css/styles.css',
                 '/chihuahua/js/app.js',
                 '/chihuahua/favicon.ico',
@@ -34,4 +34,41 @@ self.addEventListener('fetch', function(e) {
         // Return the cached file, or else try to get it from the server
             .then(response => response || fetch(e.request))
     );
+});
+
+importScripts('https://www.gstatic.com/firebasejs/7.9.3/firebase-app.js');
+importScripts('https://www.gstatic.com/firebasejs/7.9.3/firebase-messaging.js');
+
+firebase.initializeApp({
+    'messagingSenderId': '800619072131',
+    'projectId': 'chihuahua-moments',
+    'apiKey': 'AIzaSyDkXrjDI0sAtrlRV0zHTVLHx5uVDQV8eE4',
+    'appId': '1:800619072131:web:3c3871cd7892195c3069b6'
+});
+
+const messaging = firebase.messaging();
+
+messaging.setBackgroundMessageHandler(function(payload) {
+    console.log('Received background message ', payload);
+
+    return self.registration.showNotification(
+        'Background Message Title',
+        {
+            body: 'Background Message body.',
+            icon: '/firebase-logo.png'
+        }
+    );
+});
+
+self.addEventListener('activate', event => {
+    console.log('service worker now active');
+    messaging.getToken().then((currentToken) => {
+        if (currentToken) {
+            console.log('reveived toke:' + currentToken);
+        } else {
+            console.log('No Instance ID token available. Request permission to generate one.');
+        }
+    }).catch((err) => {
+        console.log('An error occurred while retrieving token. ', err);
+    });
 });

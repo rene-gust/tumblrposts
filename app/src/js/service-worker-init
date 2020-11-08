@@ -1,0 +1,11 @@
+export default class ServiceWorkerInit {
+
+    start() {
+        if ('serviceWorker' in navigator) {
+
+            navigator.serviceWorker.register('/sw.js')
+                .then(() => console.log("Service Worker Registered"))
+                .catch(e => console.log(e));;
+        }
+    }
+}

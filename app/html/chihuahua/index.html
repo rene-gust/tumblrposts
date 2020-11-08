@@ -1,23 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <link rel="stylesheet" href="/chihuahua/css/styles.css">
-    <link rel="manifest" href="/chihuahua/manifest.json">
+    <link rel="manifest" href="/manifest.json">
     <link rel='shortcut icon' type='image/x-icon' href='/chihuahua/favicon.ico'/>
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/chihuahua/js/sw.js')
-                .then(() => console.log("Service Worker Registered"))
-                .catch(e => console.log(e));
-        }
-    </script>
-    <script type="text/javascript">
-        window._mNHandle = window._mNHandle || {};
-        window._mNHandle.queue = window._mNHandle.queue || [];
-        medianet_versionId = "3121199";
-    </script>
-    <script src="//contextual.media.net/dmedianet.js?cid=8CUX58J81" async="async"></script>
+    <meta charset="utf-8"/>
+    <meta name="theme-color" content="#ffffff">
+    <link rel="apple-touch-icon" href="/chihuahua/images/ChihuahuaMomentsLogo.192.png">
 </head>
 <body>
 <ons-page>
@@ -28,22 +18,15 @@
         <div id="bottom-loading-modal">
             <img src="/chihuahua/images/loading.gif" width="32" height="32">
         </div>
+        <ons-button class="add-button">Add to home screen</ons-button>
         <ons-list id="post_list" class="post-list">
         </ons-list>
     </div>
 </ons-page>
-<ons-button class="add-button">Add to home screen</ons-button>
+<noscript>
+    <h1>This site requires javascript to be enabled</h1>
+</noscript>
+<script src="/chihuahua/js/vendor.js"></script>
 <script src="/chihuahua/js/app.js"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<div id="523916168">
-    <script type="text/javascript">
-        try {
-            window._mNHandle.queue.push(function (){
-                window._mNDetails.loadTag("523916168", "300x250", "523916168");
-            });
-        }
-        catch (error) {}
-    </script>
-</div>
 </body>
 </html>
